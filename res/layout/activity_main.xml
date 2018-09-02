@@ -1,0 +1,23 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <Button 
+        android:id="@+id/btnEncode"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Encode Demo">             
+    </Button>
+    
+    <Button
+        android:id="@+id/btnDecode"
+        android:layout_below="@id/btnEncode"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Decode demo">
+        
+    </Button>
+
+</RelativeLayout>
