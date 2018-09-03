@@ -12,28 +12,65 @@ JavaVM*		g_javaVM	= NULL;
 
 H264Sender 	*mpH264Sender 	= NULL;
 
-static jboolean playNativeAudio(JNIEnv *env, jobject, jstring strPath, jint cardid, jboolean loopPlay)
+static jboolean CreateSender(JNIEnv *env, jobject, jstring destip, jint destport, jint sendPort)
 {
 	jboolean bRet = JNI_FALSE;
 
-	if(NULL == mpLocalPlayer)
-	{
-		jboolean isCopy = JNI_FALSE;
-		const char *filePath = env->GetStringUTFChars(strPath, NULL);
-
-		mpLocalPlayer = new LocalPlayer();
-		bRet = mpLocalPlayer->Init(filePath, cardid, loopPlay);
-		mpLocalPlayer->Start();
-
-		env->ReleaseStringUTFChars(strPath, filePath);
+	if(NULL == mpH264Sender) {
+		mpH264Sender = new H264Sender();
 	}
+
+	const char *ip = env->GetStringUTFChars(destip, NULL);
+
+	if(!mpH264Sender->initSession(sendPort))
+	{
+		GLOGE("TAG 2,function %s,line:%d mpSender->initSession() failed.", __FUNCTION__, __LINE__);
+		SAFE_DELETE(mpH264Sender);
+		return false;
+	}
+	else
+		bRet = mpH264Sender->connect(std::string(ip), destport);
+
+	env->ReleaseStringUTFChars(destip, ip);
 
 	return bRet;
 }
 
+static jboolean ReleaseSender(JNIEnv *env, jobject){
+	bool bRes = false;
+	if(mpH264Sender) {
+		bRes = mpH264Sender->deinitSession();
+		SAFE_DELETE(mpH264Sender);
+	}
+	return bRes;
+}
+
+static jboolean StartFileSender(JNIEnv *env, jobject, jstring sfilename)
+{
+	 bool bRes = false;
+
+		 jboolean isCopy = JNI_FALSE;
+		 const char *fn = env->GetStringUTFChars(sfilename, NULL);
+		 GLOGV("Enter:AudioConnectDest->strIP:%s,isCopy:%c",fn, isCopy);
+
+		 mpH264Sender->startFileSend((char*)fn);
+
+		 env->ReleaseStringUTFChars(sfilename, fn);
+
+
+	 return bRes;
+}
+
+static jboolean StopFileSender(JNIEnv *env, jobject){
+	return mpH264Sender->stopFileSend();
+}
+
 static JNINativeMethod video_method_table[] = {
 		//
-
+		{"CreateSender", "(Ljava/lang/String;II)Z", (void*)CreateSender },
+		{"ReleaseSender", "()Z", (void*)ReleaseSender },
+		{"StartFileSender", "(Ljava/lang/String;)Z", (void*)StartFileSender },
+		{"StopFileSender", "()Z", (void*)StopFileSender },
 };
 
 int registerNativeMethods(JNIEnv* env, const char* className, JNINativeMethod* methods, int numMethods)

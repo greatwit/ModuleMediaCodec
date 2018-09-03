@@ -145,17 +145,19 @@ bool H264Sender::disConnect()
 	return true;
 }
 
-bool H264Sender::startFileSend(char*filename){
+bool H264Sender::startFileSend(char*filename) {
 	mFile = OpenBitstreamFile(filename);
 	if (GThread::IsRunning())
 		return ERR_RTP_POLLTHREAD_ALREADYRUNNING;
+
 	mRunning = true;
 	if (GThread::Start() < 0)
 		return ERR_RTP_POLLTHREAD_CANTSTARTTHREAD;
+
 	return true;
 }
 
-bool H264Sender::stopFileSend(){
+bool H264Sender::stopFileSend() {
 
 	RTPTime thetime = RTPTime::CurrentTime();
 	bool done = false;
