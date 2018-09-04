@@ -8,8 +8,7 @@
 
 #define REG_PATH "com/great/happyness/mediacodecmy/NativeCodec"
 
-JavaVM*		g_javaVM	= NULL;
-
+JavaVM*		g_javaVM		= NULL;
 H264Sender 	*mpH264Sender 	= NULL;
 
 static jboolean CreateSender(JNIEnv *env, jobject, jstring destip, jint destport, jint sendPort)

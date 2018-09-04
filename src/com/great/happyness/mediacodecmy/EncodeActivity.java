@@ -33,8 +33,8 @@ public class EncodeActivity extends Activity implements SurfaceHolder.Callback, 
     public Camera m_camera;  
     SurfaceView   m_prevewview;
     SurfaceHolder m_surfaceHolder;
-    int width = 1280;
-    int height = 720;
+    int width = 640;
+    int height = 480;
     int framerate = 5;
     int bitrate = 2500000;
     //int bitRate = camera.getFpsRange()[1] * currentSize.width * currentSize.height / 15;
@@ -180,8 +180,9 @@ StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
 		{
 			try {	
 				Log.d("Fuck", "1111111111111111111111111write");
-				byte[] length_bytes = intToBytes(ret);
-				file.write(length_bytes);
+				byte[] length_bytes = getStart();//intToBytes(ret);
+				if(h264[0]!=0&&h264[1]!=0&&h264[2]!=0&&h264[3]!=1)
+					file.write(length_bytes);
 				file.write(h264, 0, ret);
 				//file.flush();
 				//byteOffset += h264.length;
@@ -203,6 +204,15 @@ StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
 	    src[1] =  (byte) ((value>>8) & 0xFF);    
 	    src[0] =  (byte) (value & 0xFF);                  
 	    return src;   
+	}
+	
+	public static byte[] getStart(){
+		byte[] src = new byte[4];
+		src[3] = 0x01;
+		src[2] = 0x00;
+		src[1] = 0x00;
+		src[0] = 0x00;
+		return src;
 	}
 }
 

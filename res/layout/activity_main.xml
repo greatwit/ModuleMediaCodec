@@ -17,7 +17,21 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="Decode demo">
-        
     </Button>
 
+    <Button
+        android:id="@+id/btnStartSend"
+        android:layout_below="@id/btnDecode"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Start Send">
+    </Button>
+    
+    <Button
+        android:id="@+id/btnStopSend"
+        android:layout_below="@id/btnStartSend"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Stop Send">
+    </Button>
 </RelativeLayout>

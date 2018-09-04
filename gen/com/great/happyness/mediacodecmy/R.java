@@ -16,6 +16,8 @@ public final class R {
     public static final class id {
         public static final int btnDecode=0x7f060004;
         public static final int btnEncode=0x7f060003;
+        public static final int btnStartSend=0x7f060005;
+        public static final int btnStopSend=0x7f060006;
         public static final int image_view=0x7f060001;
         public static final int sfv_video=0x7f060000;
         public static final int surfaceViewPlay=0x7f060002;

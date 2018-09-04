@@ -1,16 +1,18 @@
 package com.great.happyness.mediacodecmy;
 
 
+import java.security.KeyStore.PrivateKeyEntry;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements View.OnClickListener{
 	
-	private Button btnEncode = null;
-	private Button btnDecode = null;
+	private Button btnEncode, btnDecode, btnStartSend, btnStopSend;
+	private NativeCodec mCodec = new NativeCodec();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -21,25 +23,30 @@ public class MainActivity extends Activity {
 	}
 	
 	private void initWidgets(){
-		btnEncode = (Button)findViewById(R.id.btnEncode);
-		btnEncode.setOnClickListener(new View.OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				Intent intent = new Intent();
-			intent.setClass(MainActivity.this, EncodeActivity.class);
-				startActivity(intent);
-			}
-		});
-		
-		btnDecode = (Button)findViewById(R.id.btnDecode);
-		btnDecode.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				Intent intent = new Intent();
-		intent.setClass(MainActivity.this, DecodeActivity.class);
-				startActivity(intent);
-			}
-		});
+		findViewById(R.id.btnEncode).setOnClickListener(this);
+		findViewById(R.id.btnDecode).setOnClickListener(this);
+		findViewById(R.id.btnStartSend).setOnClickListener(this);
+		findViewById(R.id.btnStopSend).setOnClickListener(this);
+	}
+
+	@Override
+	public void onClick(View v) {
+		// TODO Auto-generated method stub
+        switch (v.getId()) {
+        case R.id.btnEncode:
+			startActivity(new Intent(MainActivity.this, EncodeActivity.class));
+            break;
+        case R.id.btnDecode:
+        	startActivity(new Intent(MainActivity.this, DecodeActivity.class));
+        	break;
+        case R.id.btnStartSend:
+        	mCodec.CreateSender("", 9000, 8000);
+        	mCodec.StartFileSender("");
+        	break;
+        case R.id.btnStopSend:
+        	mCodec.StopFileSender();
+        	mCodec.ReleaseSender();
+        	break;
+        }
 	}
 }
