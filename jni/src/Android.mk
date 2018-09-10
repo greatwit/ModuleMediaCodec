@@ -24,8 +24,10 @@ LOCAL_SRC_FILES := NALDecoder.cpp \
 				   CodecNative.cpp \
 				   gthread/gmutex.cpp \
 				   gthread/gthread.cpp \
+				   spioutils.cpp \
 				   RtpSender.cpp \
-				   H264Sender.cpp
+				   H264Sender.cpp \
+				   TcpSender.cpp
 
 LOCAL_STATIC_LIBRARIES := libMediaStream
 

@@ -40,12 +40,16 @@ public class MainActivity extends Activity implements View.OnClickListener{
         	startActivity(new Intent(MainActivity.this, DecodeActivity.class));
         	break;
         case R.id.btnStartSend:
-        	mCodec.CreateSender("", 9000, 8000);
-        	mCodec.StartFileSender("");
+        	//mCodec.CreateSender("", 9000, 8000);
+        	//mCodec.StartFileSender("");
+        	mCodec.TcpConnect("192.168.1.106", 8080);
+        	mCodec.TcpStartFileSender("/storage/emulated/0/camera.h264");
         	break;
         case R.id.btnStopSend:
-        	mCodec.StopFileSender();
-        	mCodec.ReleaseSender();
+        	//mCodec.StopFileSender();
+        	//mCodec.ReleaseSender();
+        	mCodec.TcpStopFileSender();
+        	mCodec.TcpDisconnect();
         	break;
         }
 	}

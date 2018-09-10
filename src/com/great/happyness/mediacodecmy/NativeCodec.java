@@ -32,5 +32,10 @@ public class NativeCodec
 	public native boolean ReleaseSender();
 	public native boolean StartFileSender(String filename);
 	public native boolean StopFileSender();
+	
+	public native boolean TcpConnect(String destip, int destport);
+	public native boolean TcpDisconnect();
+	public native boolean TcpStartFileSender(String filename);
+	public native boolean TcpStopFileSender();
 }
 

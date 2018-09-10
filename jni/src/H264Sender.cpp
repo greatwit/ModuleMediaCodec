@@ -189,7 +189,7 @@ void *H264Sender::Thread(){
 	FU_HEADER		*fu_hdr;
 	char sendbuf[1500];
 	char* nalu_payload;
-	unsigned int timestamp_increse=0,ts_current=0;
+	unsigned int timestamp_increse=0, ts_current=0;
 
 	NALU_t *n = AllocNALU(8000000);
 	bool start=false;

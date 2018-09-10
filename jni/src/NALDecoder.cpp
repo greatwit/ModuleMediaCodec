@@ -155,8 +155,6 @@ int GetAnnexbNALU (FILE *file, NALU_t *nalu)
 			StartCodeFound = (info2 == 1 || info3 == 1);
 	  }
 
-
-
 	  // Here, we have found another start code (and read length of startcode bytes more than we should
 	  // have.  Hence, go back in the file
 	  rewind = (info3 == 1)? -4 : -3;

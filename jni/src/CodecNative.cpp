@@ -1,6 +1,7 @@
 #include <jni.h>
 #include "common.h"
 #include "H264Sender.h"
+#include "TcpSender.h"
 
 #ifndef NELEM
 #define NELEM(x) ((int) (sizeof(x) / sizeof((x)[0])))
@@ -10,6 +11,7 @@
 
 JavaVM*		g_javaVM		= NULL;
 H264Sender 	*mpH264Sender 	= NULL;
+TcpSender	*mpTcpSender	= NULL;
 
 static jboolean CreateSender(JNIEnv *env, jobject, jstring destip, jint destport, jint sendPort)
 {
@@ -64,12 +66,65 @@ static jboolean StopFileSender(JNIEnv *env, jobject){
 	return mpH264Sender->stopFileSend();
 }
 
+
+/////////////////////////////////////////////////////TcpSender////////////////////////////////////////////////////////
+
+static jboolean TcpConnect(JNIEnv *env, jobject, jstring destip, jint destport)
+{
+	jboolean bRet = JNI_FALSE;
+
+	if(NULL == mpTcpSender) {
+		mpTcpSender = new TcpSender();
+	}
+
+	const char *ip = env->GetStringUTFChars(destip, NULL);
+
+	bRet = mpTcpSender->connect(ip, destport);
+
+	env->ReleaseStringUTFChars(destip, ip);
+
+	return bRet;
+}
+
+static jboolean TcpDisconnect(JNIEnv *env, jobject){
+	bool bRes = false;
+	if(mpTcpSender) {
+		bRes = mpTcpSender->disConnect();
+		SAFE_DELETE(mpTcpSender);
+	}
+	return bRes;
+}
+
+static jboolean TcpStartFileSender(JNIEnv *env, jobject, jstring sfilename)
+{
+	 bool bRes = false;
+
+	 jboolean isCopy = JNI_FALSE;
+	 const char *fn = env->GetStringUTFChars(sfilename, NULL);
+	 GLOGV("Enter:AudioConnectDest->strIP:%s,isCopy:%c",fn, isCopy);
+
+	 mpTcpSender->startFileSend((char*)fn);
+
+	 env->ReleaseStringUTFChars(sfilename, fn);
+
+	 return bRes;
+}
+
+static jboolean TcpStopFileSender(JNIEnv *env, jobject){
+	return mpTcpSender->stopFileSend();
+}
+
 static JNINativeMethod video_method_table[] = {
 		//
 		{"CreateSender", "(Ljava/lang/String;II)Z", (void*)CreateSender },
 		{"ReleaseSender", "()Z", (void*)ReleaseSender },
 		{"StartFileSender", "(Ljava/lang/String;)Z", (void*)StartFileSender },
 		{"StopFileSender", "()Z", (void*)StopFileSender },
+
+		{"TcpConnect", "(Ljava/lang/String;I)Z", (void*)TcpConnect },
+		{"TcpDisconnect", "()Z", (void*)TcpDisconnect },
+		{"TcpStartFileSender", "(Ljava/lang/String;)Z", (void*)TcpStartFileSender },
+		{"TcpStopFileSender", "()Z", (void*)TcpStopFileSender },
 };
 
 int registerNativeMethods(JNIEnv* env, const char* className, JNINativeMethod* methods, int numMethods)
