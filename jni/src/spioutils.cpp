@@ -16,7 +16,7 @@
 
 #include "spioutils.h"
 
-#define  MAX_MTU 2000
+
 
 void SP_IOUtils :: inetNtoa( in_addr * addr, char * ip, int size )
 {

@@ -42,12 +42,18 @@ typedef struct {
 } NALU_HEADER; /**//* 1 BYTES */
 
 typedef struct {
+	char CC:4;
+	char X:1;
+	char M:1;
+	char V:2;
+}PACK_TYPE;
+
+typedef struct {
     //byte 0
     unsigned char TYPE:5;
 	unsigned char NRI:2; 
 	unsigned char F:1;    
-            
-             
+
 } FU_INDICATOR; /**//* 1 BYTES */
 
 typedef struct {
@@ -57,6 +63,14 @@ typedef struct {
 	unsigned char E:1;
 	unsigned char S:1;    
 } FU_HEADER; /**//* 1 BYTES */
+
+typedef struct {
+	NALU_HEADER head;	//1
+	PACK_TYPE	type;	//1
+	unsigned short len;	//2
+	unsigned int id;	//4
+}__attribute__((packed))PACK_HEAD,*LPPACK_HEAD;//按照实际占用字节数进行对齐， 8 byte
+
 typedef struct
 {
   int startcodeprefix_len;      //! 4 for parameter sets and first slice in picture, 3 for everything else (suggested)

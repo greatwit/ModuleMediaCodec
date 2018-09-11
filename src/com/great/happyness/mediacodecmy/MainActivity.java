@@ -1,8 +1,6 @@
 package com.great.happyness.mediacodecmy;
 
 
-import java.security.KeyStore.PrivateKeyEntry;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;

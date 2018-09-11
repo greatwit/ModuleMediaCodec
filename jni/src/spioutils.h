@@ -8,6 +8,14 @@
 
 #include <netinet/in.h>
 
+#ifndef  MAX_MTU
+#define  MAX_MTU 1308
+#endif
+
+#ifndef  MAX_LEN
+#define  MAX_LEN 1300
+#endif
+
 class SP_IOUtils {
 public:
 	static void inetNtoa( in_addr * addr, char * ip, int size );

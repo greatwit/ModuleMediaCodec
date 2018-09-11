@@ -5,7 +5,7 @@
 
 #include "spioutils.h"
 #include <unistd.h>
-
+#include <sys/socket.h>
 
 using namespace std;
 using namespace jrtplib;
@@ -15,6 +15,7 @@ TcpSender::TcpSender()
 		,mFile(NULL)
 		,mRunning(false)
 		,mSockId(-1)
+		,mSid(0)
 {
 
 	GLOGD("TcpSender::TcpSender construct.");
@@ -58,7 +59,7 @@ bool TcpSender::stopFileSend(){
 	{
 		// wait max 5 sec
 		RTPTime curtime = RTPTime::CurrentTime();
-		if ((curtime.GetDouble() - thetime.GetDouble()) > 5.0)
+		if ((curtime.GetDouble() - thetime.GetDouble()) > 1.0)
 			done = true;
 		RTPTime::Wait(RTPTime(0,10000));
 	}
@@ -69,6 +70,42 @@ bool TcpSender::stopFileSend(){
 	mRunning = false;
 	CloseBitstreamFile(mFile);
 	return true;
+}
+
+void TcpSender::packetHead(short len, int &id, bool mark, LPPACK_HEAD lpPack) {
+	memset(lpPack, 0, sizeof(PACK_HEAD));
+	lpPack->type.M 	= (mark==true)?1:0;
+	lpPack->id 		= htonl(id);
+	lpPack->len 	= htons(len);
+	id++;
+}
+
+int TcpSender::tcpSendData(char*data, int len){
+	int sendLen = len, iRet = 0;
+	char sendData[1500] = {0};
+	if(len<= MAX_LEN) {
+		packetHead(len+8, mSid, true, (LPPACK_HEAD)sendData[0]);
+		memcpy(sendData+8, data, len);
+		iRet += send(mSockId, sendData, len+8,0);
+	}
+	else {
+		bool bFirstPack = true;
+		while(sendLen>0){
+			if(sendLen<=MAX_LEN) {
+					packetHead(sendLen+8, mSid, false, (LPPACK_HEAD)sendData[0]);
+					memcpy(sendData+8, data+len-sendLen, sendLen);
+		     		iRet += send(mSockId, sendData, sendLen,0);
+			}
+			else {
+				packetHead(MAX_MTU, mSid, bFirstPack, (LPPACK_HEAD)sendData[0]);
+				memcpy(sendData+8, data+len-sendLen, MAX_LEN);
+				iRet += send(mSockId, data+len-sendLen, MAX_MTU,0);
+				bFirstPack = false;
+			}
+			sendLen -= MAX_LEN;
+		}
+	}
+	return iRet;
 }
 
 void *TcpSender::Thread(){
