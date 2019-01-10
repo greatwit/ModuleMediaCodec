@@ -42,7 +42,7 @@ public class EncodeActivity extends Activity implements SurfaceHolder.Callback, 
     byte[] h264 = new byte[width*height*3/2];
     
     private FileOutputStream file = null;
-    private String filename = "/sdcard/camera.h264";
+    private String filename = "/sdcard/topcamera.h264";
     private int byteOffset = 0;
     private long lastTime = 0;
 

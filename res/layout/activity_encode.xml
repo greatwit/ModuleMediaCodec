@@ -6,8 +6,8 @@
     tools:context=".EncodeActivity" >
 
     <SurfaceView
-         android:id="@+id/surfaceViewPlay"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:id="@+id/surfaceViewPlay"
+        android:layout_width="640dp	"
+        android:layout_height="480dp"/>
 
 </RelativeLayout>
